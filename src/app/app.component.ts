@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -29,21 +30,45 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
   ngOnInit(): void {
-    this.minhaPromise("Luiz")
-    .then(result => console.log(result))
-    .catch(erro => console.log(erro))
+    // this.minhaPromise("Luiz Chequini")
+    // .then(result => console.log(result))
+    // .catch(erro => console.log(erro))
+
+    this.minhaObservable('Luiz Chequini')
+    .subscribe(
+      result => console.log(result),
+      erro => console.log(erro))
   }
   title = 'desenvolvedor-io-angular-avancado-rxjs-observables';
 
   minhaPromise(nome: string) : Promise<string>{
     return new Promise((resolve, rejects) =>{
-      if(nome === "Luiz"){
+      if(nome === "Luiz Chequini"){
         setTimeout(() => {
           resolve('Seja bem vindo ' + nome);
         }, 5000);
       }
       else{
         rejects("Ops! Você não é o Luiz");
+      }
+    })
+  }
+
+  minhaObservable(nome: string) : Observable<string>{
+    return new Observable(subscriber => {
+
+      if(nome === 'Luiz Chequini'){
+
+        subscriber.next('Ola ' + nome);
+        subscriber.next('Ola de novo ' + nome);
+  
+        setTimeout(() => {
+          subscriber.next('Ola de novo com setTimeout ' + nome);
+        }, 5000);
+
+      }
+      else{
+        subscriber.error('Ops! O observable não identificou o Luiz');
       }
     })
   }
