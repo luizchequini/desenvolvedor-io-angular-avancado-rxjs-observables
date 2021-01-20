@@ -29,58 +29,68 @@ import { Observable } from 'rxjs';
   styles: []
 })
 export class AppComponent implements OnInit {
+  title = 'desenvolvedor-io-angular-avancado-rxjs-observables';
+  
   ngOnInit(): void {
-    // this.minhaPromise("Luiz Chequini")
-    // .then(result => console.log(result))
-    // .catch(erro => console.log(erro))
-
-    // this.minhaObservable('Luiz Chequini')
-    // .subscribe(
-    //   result => console.log(result),
-    //   erro => console.log(erro))
 
     const observer = {
-      next: valor => console.log('Next: ' + valor),
-      error: erro => console.log('Erro: ' + erro),
+      next: valor => console.log('Next: ', valor),
+      error: erro => console.log('Erro: ', erro),
       complete: () => console.log('Fim!')
     }
 
-    const obs = this.minhaObservable('Luiz Chequini');
-    obs.subscribe(observer);
-  }
-  title = 'desenvolvedor-io-angular-avancado-rxjs-observables';
+    const obs = this.usuarioObservable("Luiz Chequini", "luizchequini@gmail.com");
+    const unSubscribe = obs.subscribe(observer);
 
-  minhaPromise(nome: string) : Promise<string>{
-    return new Promise((resolve, rejects) =>{
-      if(nome === "Luiz Chequini"){
-        setTimeout(() => {
-          resolve('Seja bem vindo ' + nome);
-        }, 5000);
-      }
-      else{
-        rejects("Ops! Você não é o Luiz");
-      }
-    })
+    setTimeout(() => {
+      unSubscribe.unsubscribe();
+      console.log("Conexão fechada: " + unSubscribe.closed);
+    }, 3000);
   }
 
-  minhaObservable(nome: string) : Observable<string>{
+  usuarioObservable(nome: string, email: string) : Observable<Usuario>{  
+    
     return new Observable(subscriber => {
-
-      if(nome === 'Luiz Chequini'){
-
-        subscriber.next('Ola ' + nome);
-        subscriber.next('Ola de novo ' + nome);
-  
+      if(nome === "Luiz Chequini" && email === "luizchequini@gmail.com"){
+        
+        const usuario = new Usuario(nome, email);
+        
         setTimeout(() => {
-          subscriber.next('Ola de novo com setTimeout ' + nome);
-        }, 5000);
+          subscriber.next(usuario);
+        }, 1000);
 
-        subscriber.complete();
+        setTimeout(() => {
+          subscriber.next(usuario);
+        }, 2000);
+
+        setTimeout(() => {
+          subscriber.next(usuario);
+        }, 3000);
+
+        setTimeout(() => {
+          subscriber.next(usuario);
+        }, 4000);
+
+        setTimeout(() => {
+          subscriber.complete();
+        }, 5000);
 
       }
       else{
         subscriber.error('Ops! O observable não identificou o Luiz');
       }
     })
+  }
+
+}//
+
+export class Usuario {
+  
+  _nome: string;
+  _email: string;
+
+  constructor(nome: string, email: string){
+    this._nome = nome;
+    this._email = email;
   }
 }
