@@ -34,10 +34,19 @@ export class AppComponent implements OnInit {
     // .then(result => console.log(result))
     // .catch(erro => console.log(erro))
 
-    this.minhaObservable('Luiz Chequini')
-    .subscribe(
-      result => console.log(result),
-      erro => console.log(erro))
+    // this.minhaObservable('Luiz Chequini')
+    // .subscribe(
+    //   result => console.log(result),
+    //   erro => console.log(erro))
+
+    const observer = {
+      next: valor => console.log('Next: ' + valor),
+      error: erro => console.log('Erro: ' + erro),
+      complete: () => console.log('Fim!')
+    }
+
+    const obs = this.minhaObservable('Luiz Chequini');
+    obs.subscribe(observer);
   }
   title = 'desenvolvedor-io-angular-avancado-rxjs-observables';
 
@@ -65,6 +74,8 @@ export class AppComponent implements OnInit {
         setTimeout(() => {
           subscriber.next('Ola de novo com setTimeout ' + nome);
         }, 5000);
+
+        subscriber.complete();
 
       }
       else{
